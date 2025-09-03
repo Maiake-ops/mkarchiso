@@ -12,7 +12,7 @@ ISO_NAME="zorios"
 PACKAGES=(
     "linux" "linux-firmware" "base" "sudo" "nano" "vim"
     "plasma" "kde-applications" "konsole" "dolphin" "kate"
-    "firefox" "sddm" "networkmanager"
+    "firefox" "sddm" "networkmanager" "qt5-svg"
 )
 
 # ---------------- Install dependencies ----------------
@@ -24,15 +24,15 @@ mkdir -p ~/zori
 cp -r /usr/share/archiso/configs/releng/ ~/zori
 cd ~/zori
 
-# ---------------- Build Calamares (Qt5Sug fix included) ----------------
+# ---------------- Build Calamares ----------------
 git clone --branch v3.3.9 https://github.com/calamares/calamares calamares-src
 cd calamares-src
 mkdir -p build
 cd build
 
-# Export Qt5 path explicitly and disable Qt5Sug
+# Export Qt5 path explicitly
 export CMAKE_PREFIX_PATH=/usr/lib/qt5
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_SUG=OFF
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 
 make -j$(nproc)
 sudo make install DESTDIR="$ZORI_DIR/airootfs"
