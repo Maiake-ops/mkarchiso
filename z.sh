@@ -24,12 +24,16 @@ mkdir -p ~/zori
 cp -r /usr/share/archiso/configs/releng/ ~/zori
 cd ~/zori
 
-# ---------------- Build Calamares ----------------
+# ---------------- Build Calamares (Qt5Sug fix included) ----------------
 git clone --branch v3.3.9 https://github.com/calamares/calamares calamares-src
 cd calamares-src
 mkdir -p build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+
+# Export Qt5 path explicitly and disable Qt5Sug
+export CMAKE_PREFIX_PATH=/usr/lib/qt5
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_SUG=OFF
+
 make -j$(nproc)
 sudo make install DESTDIR="$ZORI_DIR/airootfs"
 cd "$ZORI_DIR"
