@@ -1,6 +1,5 @@
 #!/bin/bash
 # Full automated Zori OS ISO build with KDE Plasma + Calamares
-
 set -e
 
 # ---------------- Config ----------------
@@ -17,9 +16,7 @@ PACKAGES=(
 )
 
 # ---------------- Install dependencies ----------------
-sudo pacman -S --needed base-devel git cmake qt5-base qt5-tools \
-kf5-kconfig kf5-kio kf5-solid kf5-i18n kf5-windowssystem \
-kf5-kcoreaddons kf5-ki18n kf5-kdeclarative boost extra-cmake-modules archiso \
+sudo pacman -S --needed base-devel git cmake qt5-base qt5-tools boost extra-cmake-modules archiso \
 "${PACKAGES[@]}"
 
 # ---------------- Prepare working directory ----------------
