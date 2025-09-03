@@ -10,32 +10,44 @@ USER_NAME="user"
 ISO_NAME="zorios"
 
 PACKAGES=(
+    # Core system and desktop
     "linux" "linux-firmware" "base" "sudo" "nano" "vim"
     "plasma" "kde-applications" "konsole" "dolphin" "kate"
-    "firefox" "sddm" "networkmanager" "qt5-svg"
+    "firefox" "sddm" "networkmanager"
+
+    # Qt5 packages required for Calamares
+    "qt5-base" "qt5-tools" "qt5-declarative" "qt5-svg" "qt5-x11extras" "qt5-quickcontrols2"
+
+    # Build dependencies
+    "boost" "extra-cmake-modules" "archiso" "git" "cmake" "base-devel"
 )
 
 # ---------------- Install dependencies ----------------
-sudo pacman -S --needed base-devel git cmake qt5-base qt5-tools boost extra-cmake-modules archiso \
-"${PACKAGES[@]}"
+echo "[*] Installing all required packages..."
+sudo pacman -S --needed "${PACKAGES[@]}"
 
 # ---------------- Prepare working directory ----------------
+echo "[*] Preparing Archiso working directory..."
 mkdir -p ~/zori
 cp -r /usr/share/archiso/configs/releng/ ~/zori
 cd ~/zori
 
 # ---------------- Build Calamares ----------------
+echo "[*] Cloning and building Calamares..."
 git clone --branch v3.3.9 https://github.com/calamares/calamares calamares-src
 cd calamares-src
-mkdir -p build
+rm -rf build
+mkdir build
 cd build
 
-# Export Qt5 path explicitly
+# Explicitly point CMake to Qt5 on Arch
 export CMAKE_PREFIX_PATH=/usr/lib/qt5
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_SUG=OFF
 
+echo "[*] Compiling Calamares..."
 make -j$(nproc)
 sudo make install DESTDIR="$ZORI_DIR/airootfs"
+
 cd "$ZORI_DIR"
 
 # ---------------- Configure packages.x86_64 ----------------
